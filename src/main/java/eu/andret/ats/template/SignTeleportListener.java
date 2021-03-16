@@ -3,6 +3,7 @@ package eu.andret.ats.template;
 import eu.andret.ats.template.entity.Teleport;
 import lombok.Value;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -53,7 +54,7 @@ public class SignTeleportListener implements Listener {
 		}
 		plugin.getTeleports().add(new Teleport(event.getBlock().getLocation(), target));
 		event.setLine(0, "");
-		event.setLine(1, "§b[TELEPORT]");
+		event.setLine(1, ChatColor.AQUA + "[TELEPORT]");
 		event.setLine(2, "");
 	}
 
@@ -75,9 +76,6 @@ public class SignTeleportListener implements Listener {
 		final double x = Double.parseDouble(locationMatcher.group(1));
 		final double y = Double.parseDouble(locationMatcher.group(3));
 		final double z = Double.parseDouble(locationMatcher.group(5));
-		System.out.println("x = " + x);
-		System.out.println("y = " + y);
-		System.out.println("z = " + z);
 		return new Location(w, x, y, z);
 	}
 }
