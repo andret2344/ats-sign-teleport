@@ -1,3 +1,3 @@
 # atsSignTeleport
 
-Allows to teleport.
+Allows teleporting.
