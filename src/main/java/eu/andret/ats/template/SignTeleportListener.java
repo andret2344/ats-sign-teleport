@@ -49,7 +49,6 @@ public class SignTeleportListener implements Listener {
 		final String[] lines = event.getLines();
 		final Location target = getLocationFromLines(lines[1], lines[2]);
 		if (!lines[0].equalsIgnoreCase("[TELEPORT]") || target == null) {
-			event.getBlock().breakNaturally();
 			return;
 		}
 		plugin.getTeleports().add(new Teleport(event.getBlock().getLocation(), target));
