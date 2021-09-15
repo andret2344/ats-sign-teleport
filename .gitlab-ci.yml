@@ -78,7 +78,6 @@ jar:
   artifacts:
     paths:
       - build/libs/*.jar
-  when: manual
   cache:
     <<: *wrapper
     policy: pull
