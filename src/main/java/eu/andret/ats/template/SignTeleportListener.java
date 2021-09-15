@@ -25,11 +25,9 @@ public class SignTeleportListener implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-
 		if (event.getClickedBlock() == null) {
 			return;
 		}
-
 		plugin.getTeleports().stream()
 				.filter(x -> x.getSign().equals(event.getClickedBlock().getLocation()))
 				.findAny()

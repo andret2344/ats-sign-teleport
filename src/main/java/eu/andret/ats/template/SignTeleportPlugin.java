@@ -5,10 +5,11 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SignTeleportPlugin extends JavaPlugin {
 	@Getter
-	private final ArrayList<Teleport> teleports = new ArrayList<>();
+	private final List<Teleport> teleports = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
