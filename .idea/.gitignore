@@ -1,0 +1,15 @@
+/libraries/
+/modules/
+/shelf/
+/sonarlint/
+
+/compiler.xml
+/discord.xml
+/gradle.xml
+/intellij-javadocs-4.0.1.xml
+/jarRepositories.xml
+/modules.xml
+/sonarlint.xml
+/sonarlint-state.xml
+/uiDesigner.xml
+/workspace.xml
