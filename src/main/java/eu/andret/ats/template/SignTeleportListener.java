@@ -1,7 +1,7 @@
 package eu.andret.ats.template;
 
 import eu.andret.ats.template.entity.Teleport;
-import lombok.Value;
+import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,16 +12,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Value
+@AllArgsConstructor
 public class SignTeleportListener implements Listener {
-	SignTeleportPlugin plugin;
+	private final SignTeleportPlugin plugin;
 
 	@EventHandler
-	public void clickSign(final PlayerInteractEvent event) {
+	public void clickSign(@NotNull final PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
@@ -29,21 +31,22 @@ public class SignTeleportListener implements Listener {
 			return;
 		}
 		plugin.getTeleports().stream()
-				.filter(x -> x.getSign().equals(event.getClickedBlock().getLocation()))
+				.filter(teleport -> teleport.getSign().equals(event.getClickedBlock().getLocation()))
 				.findAny()
-				.ifPresent(x -> event.getPlayer().teleport(x.getTarget()));
+				.map(Teleport::getTarget)
+				.ifPresent(event.getPlayer()::teleport);
 	}
 
 	@EventHandler
-	public void breakBlock(final BlockBreakEvent event) {
+	public void breakBlock(@NotNull final BlockBreakEvent event) {
 		plugin.getTeleports().stream()
-				.filter(x -> x.getSign().equals(event.getBlock().getLocation()))
+				.filter(teleport -> teleport.getSign().equals(event.getBlock().getLocation()))
 				.findAny()
-				.ifPresent(x -> plugin.getTeleports().remove(x));
+				.ifPresent(plugin.getTeleports()::remove);
 	}
 
 	@EventHandler
-	public void createSign(final SignChangeEvent event) {
+	public void createSign(@NotNull final SignChangeEvent event) {
 		final String[] lines = event.getLines();
 		final Location target = getLocationFromLines(lines[1], lines[2]);
 		if (!lines[0].equalsIgnoreCase("[TELEPORT]") || target == null) {
@@ -55,7 +58,8 @@ public class SignTeleportListener implements Listener {
 		event.setLine(2, "");
 	}
 
-	private Location getLocationFromLines(final String worldLine, final String locationLine) {
+	@Nullable
+	private Location getLocationFromLines(@NotNull final String worldLine, @NotNull final String locationLine) {
 		final Pattern worldPattern = Pattern.compile("\\[(\\S+)]");
 		final Pattern locationPattern = Pattern.compile("\\[(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?)]");
 
