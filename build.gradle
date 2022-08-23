@@ -14,19 +14,26 @@ targetCompatibility = JavaVersion.VERSION_16
 
 repositories {
 	mavenCentral()
-	mavenLocal()
 	spigot()
+	maven { url 'https://repo.papermc.io/repository/maven-public/' }
 }
 
 dependencies {
 	compileOnly group: 'org.spigotmc', name: 'spigot-api', version: "${spigotVersion}-R0.1-SNAPSHOT"
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	compileOnly group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
+	implementation group: 'org.bstats', name: 'bstats-bukkit', version: '3.0.0'
+	implementation group: 'org.json', name: 'json', version: '20220320'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
-	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
-	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0'
-	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0'
+	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
+	testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.6.1'
+	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.6.1'
+	testImplementation group: 'org.spigotmc', name: 'spigot-api', version: "${spigotVersion}-R0.1-SNAPSHOT"
+	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 }
 
 compileJava.options.compilerArgs << '-parameters' << '-g' << '-Xlint:deprecation' << '-Xlint:unchecked'
@@ -34,10 +41,9 @@ compileTestJava.options.compilerArgs << '-parameters' << '-g' << '-Xlint:depreca
 
 spigot {
 	authors = ['Andret']
-	apiVersion = '1.19'
+	apiVersion = '1.17'
 	description = 'The plugin that allows to create signs that teleports'
 	version = project.version
-	prefix = 'atsSignTeleport'
 }
 
 test {
@@ -47,15 +53,26 @@ test {
 
 jacocoTestReport {
 	reports.xml.enabled true
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['eu/andret/ats/signteleport/SignTeleportPlugin.class'])
+		}))
+	}
 }
 
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = 0
+				minimum = 1
 			}
 		}
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['eu/andret/ats/signteleport/SignTeleportPlugin.class'])
+		}))
 	}
 }
 

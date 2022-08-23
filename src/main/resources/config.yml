@@ -1,0 +1,6 @@
+# Available placeholders: %WORLD%, %X%, %Y%, %Z%
+lines:
+  - '&b[TELEPORT]'
+  - ''
+  - '%WORLD%'
+  - '%X%, %Y%, %Z%'
