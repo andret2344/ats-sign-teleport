@@ -43,6 +43,8 @@ junit:
   artifacts:
     reports:
       junit: build/test-results/test/**.xml
+    paths:
+      - build/reports/jacoco/test/html/
   cache:
     <<: *wrapper
     policy: pull
@@ -74,8 +76,6 @@ jar:
 
 badges:
   stage: deploy
-  dependencies:
-    - junit
   script:
     - apt-get -qq update
     - apt-get -qq install python3 python3-pip --yes
@@ -85,7 +85,6 @@ badges:
     - anybadge -l atsArguments -v "$(./gradlew argumentsVersion -q)" -f arguments.svg -c "#007ec6"
   artifacts:
     paths:
-      - version.svg
       - spigot.svg
       - arguments.svg
     when: always
@@ -103,7 +102,7 @@ pages:
     - mv build/reports/jacoco/test/html/ public/
   artifacts:
     paths:
-      - public/**
+      - public/
   only:
     - master
   when: manual
