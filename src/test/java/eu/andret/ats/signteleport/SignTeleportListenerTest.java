@@ -127,6 +127,28 @@ class SignTeleportListenerTest {
 	}
 
 	@Test
+	void createSignWithoutPermission() {
+		// given
+		final Server server = mock(Server.class);
+		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
+		final SignTeleportListener listener = new SignTeleportListener(plugin);
+		final Block block = mock(Block.class);
+		final Player player = mock(Player.class);
+		final World world = mock(World.class);
+
+		when(plugin.getServer()).thenReturn(server);
+		when(server.getWorld(anyString())).thenReturn(world);
+		when(plugin.getLines()).thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
+		when(player.hasPermission("ats.signteleport.create")).thenReturn(false);
+
+		// when
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}));
+
+		// then
+		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+	}
+
+	@Test
 	void createSign() {
 		// given
 		final Server server = mock(Server.class);
@@ -139,6 +161,7 @@ class SignTeleportListenerTest {
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(world);
 		when(plugin.getLines()).thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
+		when(player.hasPermission("ats.signteleport.create")).thenReturn(true);
 
 		// when
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}));
@@ -194,6 +217,29 @@ class SignTeleportListenerTest {
 	}
 
 	@Test
+	void clickSignWithoutPermission() {
+		// given
+		final Server server = mock(Server.class);
+		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
+		final SignTeleportListener listener = new SignTeleportListener(plugin);
+		final Block block = mock(Block.class);
+		final Player player = mock(Player.class);
+		final World world = mock(World.class);
+
+		when(plugin.getServer()).thenReturn(server);
+		when(server.getWorld(anyString())).thenReturn(world);
+		when(block.getMetadata(SignTeleportListener.TELEPORT))
+				.thenReturn(Collections.singletonList(new FixedMetadataValue(plugin, JSON_OBJECT)));
+		when(player.hasPermission("ats.signteleport.use")).thenReturn(false);
+
+		// when
+		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, block, BlockFace.EAST));
+
+		// then
+		verify(player, times(0)).teleport(any(Location.class));
+	}
+
+	@Test
 	void clickSignWithMetadata() {
 		// given
 		final Server server = mock(Server.class);
@@ -207,6 +253,7 @@ class SignTeleportListenerTest {
 		when(server.getWorld(anyString())).thenReturn(world);
 		when(block.getMetadata(SignTeleportListener.TELEPORT))
 				.thenReturn(Collections.singletonList(new FixedMetadataValue(plugin, JSON_OBJECT)));
+		when(player.hasPermission("ats.signteleport.use")).thenReturn(true);
 
 		// when
 		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, block, BlockFace.EAST));
