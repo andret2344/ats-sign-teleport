@@ -7,6 +7,7 @@ package eu.andret.ats.signteleport;
 import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -48,13 +49,17 @@ public class SignTeleportListener implements Listener {
 		if (metadata.isEmpty()) {
 			return;
 		}
+		final Player player = event.getPlayer();
+		if (!player.hasPermission("ats.signteleport.use")) {
+			return;
+		}
 		final JSONObject jsonObject = new JSONObject(metadata.get(0).asString());
 		final Location location = new Location(
 				plugin.getServer().getWorld(jsonObject.getString(KEY_WORLD)),
 				jsonObject.getDouble(KEY_X),
 				jsonObject.getDouble(KEY_Y),
 				jsonObject.getDouble(KEY_Z));
-		event.getPlayer().teleport(location);
+		player.teleport(location);
 	}
 
 	@EventHandler
@@ -67,6 +72,9 @@ public class SignTeleportListener implements Listener {
 		final String[] lines = event.getLines();
 		final JSONObject json = createJson(lines);
 		if (json == null) {
+			return;
+		}
+		if (!event.getPlayer().hasPermission("ats.signteleport.create")) {
 			return;
 		}
 		event.getBlock().setMetadata(TELEPORT, new FixedMetadataValue(plugin, json));
