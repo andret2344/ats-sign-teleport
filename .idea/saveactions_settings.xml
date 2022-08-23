@@ -14,7 +14,6 @@
         <option value="generateSerialVersionUID" />
         <option value="unnecessaryThis" />
         <option value="explicitTypeCanBeDiamond" />
-        <option value="suppressAnnotation" />
         <option value="unnecessarySemicolon" />
       </set>
     </option>
