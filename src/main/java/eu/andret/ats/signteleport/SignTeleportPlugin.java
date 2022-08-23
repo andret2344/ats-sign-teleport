@@ -4,6 +4,7 @@
 
 package eu.andret.ats.signteleport;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +14,7 @@ public class SignTeleportPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new SignTeleportListener(this), this);
+		new Metrics(this, 16239);
 	}
 
 	@NotNull
