@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,7 +66,7 @@ class SignTeleportListenerTest {
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"", "", "", ""}));
 
 		// then
-		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
 	}
 
 	@Test
@@ -84,7 +85,7 @@ class SignTeleportListenerTest {
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1,1,1]", ""}));
 
 		// then
-		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
 	}
 
 	@Test
@@ -103,7 +104,7 @@ class SignTeleportListenerTest {
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "xyz", "[1,1,1]", ""}));
 
 		// then
-		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
 	}
 
 	@Test
@@ -123,7 +124,7 @@ class SignTeleportListenerTest {
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1]", ""}));
 
 		// then
-		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
 	}
 
 	@Test
@@ -145,7 +146,7 @@ class SignTeleportListenerTest {
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}));
 
 		// then
-		verify(block, times(0)).setMetadata(anyString(), any(MetadataValue.class));
+		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
 	}
 
 	@Test
@@ -183,7 +184,7 @@ class SignTeleportListenerTest {
 		listener.clickSign(new PlayerInteractEvent(player, Action.LEFT_CLICK_AIR, null, null, BlockFace.EAST));
 
 		// then
-		verify(player, times(0)).teleport(any(Location.class));
+		verify(player, never()).teleport(any(Location.class));
 	}
 
 	@Test
@@ -197,7 +198,7 @@ class SignTeleportListenerTest {
 		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, null, BlockFace.EAST));
 
 		// then
-		verify(player, times(0)).teleport(any(Location.class));
+		verify(player, never()).teleport(any(Location.class));
 	}
 
 	@Test
@@ -213,7 +214,7 @@ class SignTeleportListenerTest {
 		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, block, BlockFace.EAST));
 
 		// then
-		verify(player, times(0)).teleport(any(Location.class));
+		verify(player, never()).teleport(any(Location.class));
 	}
 
 	@Test
@@ -236,7 +237,7 @@ class SignTeleportListenerTest {
 		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, block, BlockFace.EAST));
 
 		// then
-		verify(player, times(0)).teleport(any(Location.class));
+		verify(player, never()).teleport(any(Location.class));
 	}
 
 	@Test
