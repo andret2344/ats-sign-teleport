@@ -44,6 +44,15 @@ spigot {
 	apiVersion = '1.17'
 	description = 'The plugin that allows to create signs that teleports'
 	version = project.version
+
+	permissions {
+		'ats.signteleport.*' {
+			children = [
+					'ats.signteleport.use'   : true,
+					'ats.signteleport.create': false
+			]
+		}
+	}
 }
 
 test {
