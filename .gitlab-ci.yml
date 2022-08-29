@@ -55,7 +55,7 @@ publish:
     - ./gradlew clean
     - ./gradlew publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
     - when: never
   cache:
@@ -90,7 +90,7 @@ badges:
     when: always
     expire_in: 4 weeks
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
     - when: never
 
@@ -104,5 +104,5 @@ pages:
     paths:
       - public/
   only:
-    - master
+    - main
   when: manual
