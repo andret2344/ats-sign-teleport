@@ -9,6 +9,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -17,7 +18,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.testng.MockitoTestNGListener;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +36,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class SignTeleportListenerTest {
+@Listeners(MockitoTestNGListener.class)
+public class SignTeleportListenerTest {
+	@Mock
+	private Block block;
+	@Mock
+	private Player player;
+	@Mock
+	private Server server;
+	@Mock
+	private World world;
+	@Mock
+	private YamlConfiguration yamlConfiguration;
+
 	private static final JSONObject JSON_OBJECT = new JSONObject()
 			.put("world", "xyz")
 			.put("x", 1.4)
@@ -44,8 +60,6 @@ class SignTeleportListenerTest {
 		// given
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
 
 		// when
 		listener.breakBlock(new BlockBreakEvent(block, player));
@@ -59,8 +73,6 @@ class SignTeleportListenerTest {
 		// given
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
 
 		// when
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"", "", "", ""}));
@@ -72,11 +84,8 @@ class SignTeleportListenerTest {
 	@Test
 	void createSignWithWrongWorld() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
 
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(null);
@@ -91,14 +100,8 @@ class SignTeleportListenerTest {
 	@Test
 	void createSignWithNoWorld() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-
-		when(plugin.getServer()).thenReturn(server);
-		when(server.getWorld(anyString())).thenReturn(null);
 
 		// when
 		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "xyz", "[1,1,1]", ""}));
@@ -110,12 +113,8 @@ class SignTeleportListenerTest {
 	@Test
 	void createSignWithWrongCoords() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-		final World world = mock(World.class);
 
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(world);
@@ -130,16 +129,11 @@ class SignTeleportListenerTest {
 	@Test
 	void createSignWithoutPermission() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-		final World world = mock(World.class);
 
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(world);
-		when(plugin.getLines()).thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
 		when(player.hasPermission("ats.signteleport.create")).thenReturn(false);
 
 		// when
@@ -152,16 +146,14 @@ class SignTeleportListenerTest {
 	@Test
 	void createSign() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-		final World world = mock(World.class);
 
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(world);
-		when(plugin.getLines()).thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
+		when(plugin.getConfig()).thenReturn(yamlConfiguration);
+		when(yamlConfiguration.getStringList("lines"))
+				.thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
 		when(player.hasPermission("ats.signteleport.create")).thenReturn(true);
 
 		// when
@@ -178,7 +170,6 @@ class SignTeleportListenerTest {
 		// given
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Player player = mock(Player.class);
 
 		// when
 		listener.clickSign(new PlayerInteractEvent(player, Action.LEFT_CLICK_AIR, null, null, BlockFace.EAST));
@@ -192,7 +183,6 @@ class SignTeleportListenerTest {
 		// given
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Player player = mock(Player.class);
 
 		// when
 		listener.clickSign(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, null, null, BlockFace.EAST));
@@ -206,8 +196,6 @@ class SignTeleportListenerTest {
 		// given
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
 		when(block.getMetadata(SignTeleportListener.TELEPORT)).thenReturn(Collections.emptyList());
 
 		// when
@@ -220,15 +208,9 @@ class SignTeleportListenerTest {
 	@Test
 	void clickSignWithoutPermission() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-		final World world = mock(World.class);
 
-		when(plugin.getServer()).thenReturn(server);
-		when(server.getWorld(anyString())).thenReturn(world);
 		when(block.getMetadata(SignTeleportListener.TELEPORT))
 				.thenReturn(Collections.singletonList(new FixedMetadataValue(plugin, JSON_OBJECT)));
 		when(player.hasPermission("ats.signteleport.use")).thenReturn(false);
@@ -243,12 +225,8 @@ class SignTeleportListenerTest {
 	@Test
 	void clickSignWithMetadata() {
 		// given
-		final Server server = mock(Server.class);
 		final SignTeleportPlugin plugin = mock(SignTeleportPlugin.class);
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
-		final Block block = mock(Block.class);
-		final Player player = mock(Player.class);
-		final World world = mock(World.class);
 
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getWorld(anyString())).thenReturn(world);
