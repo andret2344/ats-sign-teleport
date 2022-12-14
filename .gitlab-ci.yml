@@ -1,4 +1,4 @@
-image: gradle:jdk16
+image: gradle:jdk17
 
 cache: &wrapper
   paths:
@@ -32,7 +32,7 @@ compile:
     <<: *wrapper
     policy: pull
 
-junit:
+unit:
   stage: verify
   dependencies:
     - compile
@@ -96,8 +96,6 @@ badges:
 
 pages:
   stage: deploy
-  dependencies:
-    - junit
   script:
     - mv build/reports/jacoco/test/html/ public/
   artifacts:

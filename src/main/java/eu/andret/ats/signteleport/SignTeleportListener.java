@@ -78,7 +78,7 @@ public class SignTeleportListener implements Listener {
 			return;
 		}
 		event.getBlock().setMetadata(TELEPORT, new FixedMetadataValue(plugin, json));
-		final List<String> configLines = plugin.getLines();
+		final List<String> configLines = plugin.getConfig().getStringList("lines");
 		List.of(0, 1, 2, 3)
 				.forEach(i -> event.setLine(i, createLine(configLines.get(i), json)));
 	}
