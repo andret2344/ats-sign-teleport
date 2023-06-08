@@ -1,7 +1,7 @@
 plugins {
-	id 'de.jansauer.printcoverage' version '2.0.0'
-	id 'com.github.johnrengelman.shadow' version '7.1.2'
-	id 'kr.entree.spigradle' version '2.3.4'
+	id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
+	id 'kr.entree.spigradle' version '2.4.3'
 }
 
 apply plugin: 'idea'
@@ -20,20 +20,16 @@ repositories {
 
 dependencies {
 	compileOnly group: 'org.spigotmc', name: 'spigot-api', version: "${spigotVersion}-R0.1-SNAPSHOT"
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-	compileOnly group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
-	implementation group: 'org.bstats', name: 'bstats-bukkit', version: '3.0.0'
-	implementation group: 'org.json', name: 'json', version: '20220320'
-	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	compileOnly group: 'org.jetbrains', name: 'annotations', version: '24.0.1'
+	implementation group: 'org.bstats', name: 'bstats-bukkit', version: '3.0.2'
+	implementation group: 'org.json', name: 'json', version: '20230227'
 
-	testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.9.0'
-	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.9.0'
-	testImplementation group: 'org.mockito', name: 'mockito-testng', version: '0.4.30'
+	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.3.1'
+	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0'
+	testImplementation group: 'org.mockito', name: 'mockito-testng', version: '0.5.0'
 	testImplementation group: 'org.spigotmc', name: 'spigot-api', version: "${spigotVersion}-R0.1-SNAPSHOT"
-	testImplementation group: 'org.testng', name: 'testng', version: '7.6.1'
-	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
 
 compileJava.options.compilerArgs << '-parameters' << '-g' << '-Xlint:deprecation' << '-Xlint:unchecked'
@@ -57,15 +53,13 @@ spigot {
 
 test {
 	useTestNG()
-	finalizedBy jacocoTestCoverageVerification, printCoverage
+	finalizedBy jacocoTestCoverageVerification, jacocoAggregatedReport
 }
 
 jacocoTestReport {
-	reports.xml.enabled true
-
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: ['eu/andret/ats/signteleport/SignTeleportPlugin.class'])
+			fileTree(dir: it, exclude: ['**/*Plugin.class'])
 		}))
 	}
 }
@@ -80,7 +74,7 @@ jacocoTestCoverageVerification {
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: ['eu/andret/ats/signteleport/SignTeleportPlugin.class'])
+			fileTree(dir: it, exclude: ['**/*Plugin.*'])
 		}))
 	}
 }
@@ -91,15 +85,15 @@ javadoc {
 
 	//noinspection GroovyAssignabilityCheck
 	options {
-		memberLevel = JavadocMemberLevel.PUBLIC
-		author = true
-		links = ['https://docs.oracle.com/en/java/javase/16/docs/api/']
+		setMemberLevel JavadocMemberLevel.PUBLIC
+		setAuthor true
+		links 'https://docs.oracle.com/en/java/javase/17/docs/api/'
 	}
 }
 
 task sourceJar(type: Jar) {
 	archiveClassifier.set('sources')
-	from file('build/delombok')
+	from sourceSets.main.allJava
 }
 
 task packageJavadoc(type: Jar) {
@@ -122,6 +116,7 @@ publishing {
 	repositories {
 		maven {
 			url 'https://gitlab.com/api/v4/projects/25194962/packages/maven'
+			//noinspection GroovyAssignabilityCheck
 			credentials(HttpHeaderCredentials) {
 				name = 'Job-Token'
 				value = System.getenv('CI_JOB_TOKEN')
@@ -137,8 +132,6 @@ publishing {
 shadowJar {
 	archiveFileName = "${project.name}-${project.version}.jar"
 	relocate 'org.bstats', 'eu.andret.ats.signteleport.bstats'
-	project.configurations.implementation.canBeResolved = true
-	configurations = [project.configurations.implementation]
 }
 
 build.dependsOn(shadowJar)

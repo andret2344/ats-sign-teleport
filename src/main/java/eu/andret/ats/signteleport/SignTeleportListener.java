@@ -1,10 +1,9 @@
 /*
- * Copyright Andret Tools System (c) 2018-2022. Copying and modifying allowed only keeping git link reference.
+ * Copyright Andret Tools System (c) 2018. Copying and modifying allowed only keeping git link reference.
  */
 
 package eu.andret.ats.signteleport;
 
-import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@AllArgsConstructor
 public class SignTeleportListener implements Listener {
 	private static final Pattern LOCATION_PATTERN = Pattern.compile("\\[(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?)]");
 	private static final Pattern WORLD_PATTERN = Pattern.compile("\\[(\\S+)]");
@@ -35,7 +33,12 @@ public class SignTeleportListener implements Listener {
 	private static final String KEY_Y = "y";
 	private static final String KEY_Z = "z";
 
+	@NotNull
 	private final SignTeleportPlugin plugin;
+
+	public SignTeleportListener(@NotNull final SignTeleportPlugin plugin) {
+		this.plugin = plugin;
+	}
 
 	@EventHandler
 	public void clickSign(@NotNull final PlayerInteractEvent event) {
