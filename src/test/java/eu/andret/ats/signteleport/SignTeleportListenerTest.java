@@ -1,5 +1,5 @@
 /*
- * Copyright Andret Tools System (c) 2018-2022. Copying and modifying allowed only keeping git link reference.
+ * Copyright Andret Tools System (c) 2018. Copying and modifying allowed only keeping git link reference.
  */
 
 package eu.andret.ats.signteleport;
@@ -9,6 +9,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -75,7 +76,7 @@ public class SignTeleportListenerTest {
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"", "", "", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"", "", "", ""}, Side.FRONT));
 
 		// then
 		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
@@ -91,7 +92,7 @@ public class SignTeleportListenerTest {
 		when(server.getWorld(anyString())).thenReturn(null);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1,1,1]", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1,1,1]", ""}, Side.FRONT));
 
 		// then
 		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
@@ -104,7 +105,7 @@ public class SignTeleportListenerTest {
 		final SignTeleportListener listener = new SignTeleportListener(plugin);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "xyz", "[1,1,1]", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "xyz", "[1,1,1]", ""}, Side.FRONT));
 
 		// then
 		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
@@ -120,7 +121,7 @@ public class SignTeleportListenerTest {
 		when(server.getWorld(anyString())).thenReturn(world);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1]", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1]", ""}, Side.FRONT));
 
 		// then
 		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
@@ -137,7 +138,7 @@ public class SignTeleportListenerTest {
 		when(player.hasPermission("ats.signteleport.create")).thenReturn(false);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}, Side.FRONT));
 
 		// then
 		verify(block, never()).setMetadata(anyString(), any(MetadataValue.class));
@@ -157,7 +158,7 @@ public class SignTeleportListenerTest {
 		when(player.hasPermission("ats.signteleport.create")).thenReturn(true);
 
 		// when
-		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}));
+		listener.createSign(new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}, Side.FRONT));
 
 		// then
 		final String value = JSON_OBJECT.toString();
