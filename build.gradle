@@ -40,6 +40,8 @@ spigot {
 	apiVersion = '1.17'
 	description = 'The plugin that allows to create signs that teleports'
 	version = project.version
+	website = 'https://www.spigotmc.org/resources/ats-andret-tools-system-sign-teleport-place-a-sign-teleporting-clicking-player.104918/'
+	libraries = ['org.jetbrains:annotations:24.0.1']
 
 	permissions {
 		'ats.signteleport.*' {
