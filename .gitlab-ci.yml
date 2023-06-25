@@ -71,6 +71,8 @@ badges:
 
 pages:
   stage: deploy
+  dependencies:
+    - unit
   script:
     - mv build/reports/jacoco/jacocoAggregatedReport/html/ public/
   artifacts:
