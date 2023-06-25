@@ -29,7 +29,7 @@ unit:
     reports:
       junit: build/test-results/test/**.xml
     paths:
-      - build/reports/jacoco/test/html/
+      - build/reports/jacoco/jacocoAggregatedReport/html/
 
 publish:
   stage: deploy
@@ -43,7 +43,7 @@ publish:
 jar:
   stage: deploy
   script:
-    - gradle build
+    - ./gradlew build
   artifacts:
     paths:
       - build/libs/*.jar
