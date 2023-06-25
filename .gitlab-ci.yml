@@ -23,7 +23,7 @@ unit:
     - compile
   script:
     - ./gradlew test
-  coverage: '/^Coverage:\s(\d+\.\d+%)/'
+  coverage: '/    - Instruction Coverage: ([0-9.]+)%/'
   when: on_success
   artifacts:
     reports:
@@ -72,7 +72,7 @@ badges:
 pages:
   stage: deploy
   script:
-    - mv build/reports/jacoco/test/html/ public/
+    - mv build/reports/jacoco/jacocoAggregatedReport/html/ public/
   artifacts:
     paths:
       - public/
