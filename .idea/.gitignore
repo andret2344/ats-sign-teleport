@@ -4,6 +4,7 @@
 /sonarlint/
 
 /compiler.xml
+/dbnavigator.xml
 /discord.xml
 /gradle.xml
 /intellij-javadocs-4.0.1.xml

@@ -24,14 +24,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignTeleportListener implements Listener {
-	private static final Pattern LOCATION_PATTERN = Pattern.compile("\\[(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?)]");
-	private static final Pattern WORLD_PATTERN = Pattern.compile("\\[(\\S+)]");
+	public static final Pattern LOCATION_PATTERN = Pattern.compile("\\[(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?),\\s*(-?\\d+(.\\d+)?)]");
+	public static final Pattern WORLD_PATTERN = Pattern.compile("\\[(\\S+)]");
 
 	public static final String TELEPORT = "teleport";
-	private static final String KEY_WORLD = "world";
-	private static final String KEY_X = "x";
-	private static final String KEY_Y = "y";
-	private static final String KEY_Z = "z";
+	public static final String KEY_WORLD = "world";
+	public static final String KEY_X = "x";
+	public static final String KEY_Y = "y";
+	public static final String KEY_Z = "z";
 
 	@NotNull
 	private final SignTeleportPlugin plugin;
