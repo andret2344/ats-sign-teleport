@@ -37,9 +37,9 @@ publish:
   script:
     - ./gradlew publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-    - when: never
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      when: manual
+#    - when: never
 
 jar:
   stage: deploy
