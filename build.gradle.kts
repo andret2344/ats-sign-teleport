@@ -23,7 +23,7 @@ dependencies {
 	implementation(group = "org.json", name = "json", version = "20230227")
 
 	testImplementation(group = "org.assertj", name = "assertj-core", version = "3.24.2")
-	testImplementation(group = "org.mockito", name = "mockito-core", version = "5.3.1")
+	testImplementation(group = "org.mockito", name = "mockito-core", version = "5.4.0")
 	testImplementation(group = "org.mockito", name = "mockito-inline", version = "5.2.0")
 	testImplementation(group = "org.mockito", name = "mockito-testng", version = "0.5.0")
 	testImplementation(group = "org.spigotmc", name = "spigot-api", version = "${project.properties["spigotVersion"]}-R0.1-SNAPSHOT")
