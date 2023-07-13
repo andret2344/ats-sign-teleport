@@ -61,15 +61,6 @@ tasks {
 		}
 	}
 
-	javadoc {
-		source = sourceSets["main"].allJava
-		classpath = configurations["compileClasspath"]
-
-		options {
-			memberLevel = JavadocMemberLevel.PUBLIC
-		}
-	}
-
 	spigot {
 		authors = listOf("Andret")
 		apiVersion = "1.17"
@@ -102,7 +93,6 @@ tasks {
 		publications {
 			create<MavenPublication>("maven") {
 				artifact(jar)
-				artifact(javadoc)
 				groupId = project.properties["group"] as String
 				version = project.properties["version"] as String
 				artifactId = project.properties["artifact"] as String
