@@ -6,11 +6,15 @@
 /compiler.xml
 /dbnavigator.xml
 /discord.xml
+/git_toolbox_blame.xml
+/git_toolbox_prj.xml
 /gradle.xml
 /intellij-javadocs-4.0.1.xml
 /jarRepositories.xml
 /jpa-buddy.xml
+/misc.xml
 /modules.xml
+/runConfigurations.xml
 /sonarlint.xml
 /sonarlint-state.xml
 /uiDesigner.xml

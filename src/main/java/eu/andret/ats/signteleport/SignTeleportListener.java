@@ -1,5 +1,5 @@
 /*
- * Copyright Andret Tools System (c) 2018. Copying and modifying allowed only keeping git link reference.
+ * Copyright Andret Tools System (c) 2025. Copying and modifying allowed only keeping git link reference.
  */
 
 package eu.andret.ats.signteleport;
@@ -63,6 +63,7 @@ public class SignTeleportListener implements Listener {
 				jsonObject.getDouble(KEY_Y),
 				jsonObject.getDouble(KEY_Z));
 		player.teleport(location);
+		event.setCancelled(true);
 	}
 
 	@EventHandler
