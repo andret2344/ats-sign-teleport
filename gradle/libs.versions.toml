@@ -1,0 +1,20 @@
+[versions]
+spigot = "1.21.4-R0.1-SNAPSHOT"
+jetbrains-annotations = "26.0.2"
+bstats = "3.1.0"
+json = "20250107"
+assertj-core = "3.27.3"
+mockito-core = "5.15.2"
+mockito-testng = "0.5.2"
+testng = "7.11.0"
+
+[libraries]
+spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
+json = { module = "org.json:json", version.ref = "json" }
+
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj-core" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
+mockito-testng = { module = "org.mockito:mockito-testng", version.ref = "mockito-testng" }
+testng = { module = "org.testng:testng", version.ref = "testng" }

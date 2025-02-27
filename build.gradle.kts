@@ -1,45 +1,42 @@
 /*
- * Copyright Andret Tools System (c) 2018. Copying and modifying allowed only keeping git link reference.
+ * Copyright Andret Tools System (c) 2025. Copying and modifying allowed only keeping git link reference.
  */
 
 plugins {
-	idea
 	java
 	jacoco
 	`maven-publish`
 	id("org.barfuin.gradle.jacocolog") version "3.1.0"
-	id("com.github.johnrengelman.shadow") version "8.1.1"
-	id("kr.entree.spigradle") version "2.4.3"
+	id("com.gradleup.shadow") version "8.3.6"
 }
 
-repositories {
-	mavenCentral()
-}
+val mockitoAgent = configurations.create("mockitoAgent")
 
 dependencies {
-	compileOnly(group = "org.spigotmc", name = "spigot-api", version = "${project.properties["spigotVersion"]}-R0.1-SNAPSHOT")
-	compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
-	implementation(group = "org.bstats", name = "bstats-bukkit", version = "3.0.2")
-	implementation(group = "org.json", name = "json", version = "20230227")
+	compileOnly(libs.spigot.api)
+	compileOnly(libs.jetbrains.annotations)
+	implementation(libs.bstats.bukkit)
+	implementation(libs.json)
 
-	testImplementation(group = "org.assertj", name = "assertj-core", version = "3.24.2")
-	testImplementation(group = "org.mockito", name = "mockito-core", version = "5.4.0")
-	testImplementation(group = "org.mockito", name = "mockito-inline", version = "5.2.0")
-	testImplementation(group = "org.mockito", name = "mockito-testng", version = "0.5.0")
-	testImplementation(group = "org.spigotmc", name = "spigot-api", version = "${project.properties["spigotVersion"]}-R0.1-SNAPSHOT")
-	testImplementation(group = "org.testng", name = "testng", version = "7.8.0")
+	mockitoAgent(libs.mockito.core) { isTransitive = false }
+	testImplementation(libs.assertj.core)
+	testImplementation(libs.mockito.core)
+	testImplementation(libs.mockito.testng)
+	testImplementation(libs.spigot.api)
+	testImplementation(libs.testng)
 }
 
 tasks {
 	compileJava {
-		sourceCompatibility = "17"
-		targetCompatibility = "17"
+		sourceCompatibility = JavaVersion.VERSION_17.toString()
+		targetCompatibility = JavaVersion.VERSION_17.toString()
 		options.compilerArgs.addAll(listOf("-parameters", "-g", "-Xlint:deprecation", "-Xlint:unchecked"))
 	}
 
 	test {
 		useTestNG()
 		finalizedBy(jacocoTestCoverageVerification, jacocoAggregatedReport)
+		jvmArgs("-javaagent:${mockitoAgent.asPath}")
 	}
 
 	jacocoTestReport {
@@ -55,26 +52,8 @@ tasks {
 			rule {
 				classDirectories.setFrom(jacocoTestReport.get().classDirectories)
 				limit {
-					minimum = BigDecimal("1")
+					minimum = "1".toBigDecimal()
 				}
-			}
-		}
-	}
-
-	spigot {
-		authors = listOf("Andret")
-		apiVersion = "1.17"
-		description = "The plugin that allows to create signs that teleports"
-		version = project.properties["version"] as String
-		website = "https://www.spigotmc.org/resources/ats-andret-tools-system-sign-teleport-place-a-sign-teleporting-clicking-player.104918/"
-		libraries = listOf("org.jetbrains:annotations:24.0.1")
-
-		permissions {
-			create("ats.signteleport.*") {
-				children = mapOf(
-						"ats.signteleport.use" to true,
-						"ats.signteleport.create" to false
-				)
 			}
 		}
 	}
@@ -93,9 +72,9 @@ tasks {
 		publications {
 			create<MavenPublication>("maven") {
 				artifact(jar)
-				groupId = project.properties["group"] as String
-				version = project.properties["version"] as String
-				artifactId = project.properties["artifact"] as String
+				groupId = project.properties["group"].toString()
+				version = project.properties["version"].toString()
+				artifactId = project.properties["artifact"].toString()
 			}
 		}
 		repositories {
