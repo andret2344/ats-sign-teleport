@@ -1,4 +1,4 @@
-# Available placeholders: %WORLD%, %X%, %Y%, %Z%
+# Available placeholders: %WORLD%, %X%, %Y%, %Z%, %YAW%, %PITCH%
 lines:
   - '&b[TELEPORT]'
   - ''

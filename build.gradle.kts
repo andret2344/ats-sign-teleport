@@ -1,56 +1,57 @@
 /*
- * Copyright Andret Tools System (c) 2025. Copying and modifying allowed only keeping git link reference.
+ * Copyright Andret Tools System (c) 2026. Copying and modifying allowed only keeping git link reference.
  */
 
 plugins {
 	java
 	jacoco
 	`maven-publish`
-	id("org.barfuin.gradle.jacocolog") version "3.1.0"
-	id("com.gradleup.shadow") version "8.3.6"
+	id("org.barfuin.gradle.jacocolog") version "4.0.1"
+	id("com.gradleup.shadow") version "9.4.0"
 }
-
-val mockitoAgent = configurations.create("mockitoAgent")
 
 dependencies {
 	compileOnly(libs.spigot.api)
 	compileOnly(libs.jetbrains.annotations)
 	implementation(libs.bstats.bukkit)
-	implementation(libs.json)
 
-	mockitoAgent(libs.mockito.core) { isTransitive = false }
 	testImplementation(libs.assertj.core)
 	testImplementation(libs.mockito.core)
-	testImplementation(libs.mockito.testng)
+	testImplementation(libs.mockito.junit.jupiter)
 	testImplementation(libs.spigot.api)
-	testImplementation(libs.testng)
+	testImplementation(libs.junit.jupiter)
+	testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks {
 	compileJava {
-		sourceCompatibility = JavaVersion.VERSION_17.toString()
-		targetCompatibility = JavaVersion.VERSION_17.toString()
+		sourceCompatibility = JavaVersion.VERSION_25.toString()
+		targetCompatibility = JavaVersion.VERSION_25.toString()
 		options.compilerArgs.addAll(listOf("-parameters", "-g", "-Xlint:deprecation", "-Xlint:unchecked"))
 	}
 
 	test {
-		useTestNG()
-		finalizedBy(jacocoTestCoverageVerification, jacocoAggregatedReport)
-		jvmArgs("-javaagent:${mockitoAgent.asPath}")
+		useJUnitPlatform()
+		finalizedBy(jacocoTestCoverageVerification, jacocoTestReport)
 	}
 
 	jacocoTestReport {
-		classDirectories.setFrom(classDirectories.files.map {
-			fileTree(it).matching {
+		reports {
+			xml.required.set(true)
+			html.required.set(false)
+		}
+		classDirectories.setFrom(
+			sourceSets.main.get().output.classesDirs.asFileTree.matching {
 				exclude("**/*Plugin.*")
 			}
-		})
+		)
 	}
 
 	jacocoTestCoverageVerification {
+		dependsOn(jacocoTestReport)
+		classDirectories.setFrom(jacocoTestReport.get().classDirectories)
 		violationRules {
 			rule {
-				classDirectories.setFrom(jacocoTestReport.get().classDirectories)
 				limit {
 					minimum = "1".toBigDecimal()
 				}
@@ -65,7 +66,6 @@ tasks {
 	shadowJar {
 		archiveFileName.set("${project.name}-${project.version}.jar")
 		relocate("org.bstats", "eu.andret.ats.signteleport.bstats")
-		relocate("org.json", "eu.andret.ats.signteleport.json")
 	}
 
 	publishing {
@@ -79,15 +79,11 @@ tasks {
 		}
 		repositories {
 			maven {
-				name = "GitLab"
-
-				url = uri("https://gitlab.com/api/v4/projects/25194962/packages/maven")
-				credentials(HttpHeaderCredentials::class) {
-					name = "Job-Token"
-					value = System.getenv("CI_JOB_TOKEN")
-				}
-				authentication {
-					create<HttpHeaderAuthentication>("header")
+				name = "GitHubPackages"
+				url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY") ?: ""}")
+				credentials {
+					username = System.getenv("GITHUB_ACTOR")
+					password = System.getenv("GITHUB_TOKEN")
 				}
 			}
 		}

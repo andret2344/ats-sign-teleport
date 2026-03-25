@@ -11,7 +11,11 @@ public class SignTeleportPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
-		getServer().getPluginManager().registerEvents(new SignTeleportListener(this), this);
+		final SignTeleportService service = new SignTeleportService(this);
+		final SignTeleportListener listener = new SignTeleportListener(this, service);
+		getServer().getPluginManager().registerEvents(listener, this);
+		service.updateSigns();
+		getCommand("signteleport").setExecutor(new SignTeleportCommand(this, service));
 		new Metrics(this, 16239);
 	}
 }
