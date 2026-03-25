@@ -19,8 +19,9 @@ permissions:
     description: Grants all permissions for SignTeleport
     children:
       ats.signteleport.use: true
-      ats.signteleport.create: false
-      ats.signteleport.break: false
+      ats.signteleport.create: true
+      ats.signteleport.break: true
+      ats.signteleport.reload: true
   ats.signteleport.use:
     description: Allows using teleport signs
     default: true
