@@ -4,6 +4,7 @@
 
 package eu.andret.ats.signteleport;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.Test;
@@ -50,9 +51,10 @@ class SignTeleportCommandTest {
 		final boolean result = cmd.onCommand(sender, command, "signteleport", new String[]{"unknown"});
 
 		// then
-		assertThat(result).isFalse();
+		assertThat(result).isTrue();
 		verify(plugin, never()).reloadConfig();
 		verify(service, never()).updateSigns();
+		verify(sender).sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + "Usage: /signteleport reload");
 	}
 
 	@Test
@@ -64,8 +66,9 @@ class SignTeleportCommandTest {
 		final boolean result = cmd.onCommand(sender, command, "signteleport", new String[]{});
 
 		// then
-		assertThat(result).isFalse();
+		assertThat(result).isTrue();
 		verify(plugin, never()).reloadConfig();
+		verify(sender).sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + "Usage: /signteleport reload");
 	}
 
 	@Test

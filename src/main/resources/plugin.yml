@@ -1,6 +1,6 @@
 name: atsSignTeleport
 main: eu.andret.ats.signteleport.SignTeleportPlugin
-version: 0.2.0
+version: 0.2.1
 description: The plugin that allows to create signs that teleport
 api-version: 1.17
 author: Andret2344
