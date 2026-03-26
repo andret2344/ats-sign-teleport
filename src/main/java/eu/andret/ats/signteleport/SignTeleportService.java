@@ -55,7 +55,7 @@ public class SignTeleportService {
 	}
 
 	public boolean isTeleportSign(@NotNull final PersistentDataContainer pdc) {
-		return pdc.has(keyWorld);
+		return pdc.has(keyWorld, PersistentDataType.STRING);
 	}
 
 	@NotNull
@@ -67,21 +67,6 @@ public class SignTeleportService {
 				pdc.getOrDefault(keyZ, PersistentDataType.DOUBLE, 0.0),
 				pdc.getOrDefault(keyYaw, PersistentDataType.FLOAT, 0.0f),
 				pdc.getOrDefault(keyPitch, PersistentDataType.FLOAT, 0.0f));
-	}
-
-	@NotNull
-	public String[] buildEditorLines(@NotNull final PersistentDataContainer pdc, @NotNull final String worldName) {
-		final double x = pdc.getOrDefault(keyX, PersistentDataType.DOUBLE, 0.0);
-		final double y = pdc.getOrDefault(keyY, PersistentDataType.DOUBLE, 0.0);
-		final double z = pdc.getOrDefault(keyZ, PersistentDataType.DOUBLE, 0.0);
-		final float yaw = pdc.getOrDefault(keyYaw, PersistentDataType.FLOAT, 0.0f);
-		final float pitch = pdc.getOrDefault(keyPitch, PersistentDataType.FLOAT, 0.0f);
-		return new String[]{
-				"[TELEPORT]",
-				"[" + worldName + "]",
-				String.format("[%.1f, %.1f, %.1f]", x, y, z),
-				String.format("[%.1f, %.1f]", yaw, pitch)
-		};
 	}
 
 	@Nullable
@@ -135,18 +120,18 @@ public class SignTeleportService {
 		final double z = Double.parseDouble(data[3]);
 		final float yaw = Float.parseFloat(data[4]);
 		final float pitch = Float.parseFloat(data[5]);
-		pdc.set(keyWorld, PersistentDataType.STRING, data[0]);
-		pdc.set(keyX, PersistentDataType.DOUBLE, x);
-		pdc.set(keyY, PersistentDataType.DOUBLE, y);
-		pdc.set(keyZ, PersistentDataType.DOUBLE, z);
-		pdc.set(keyYaw, PersistentDataType.FLOAT, yaw);
-		pdc.set(keyPitch, PersistentDataType.FLOAT, pitch);
 		final List<String> configLines = plugin.getConfig().getStringList(LINES);
 		if (configLines.size() < 4) {
 			return;
 		}
 		List.of(0, 1, 2, 3)
 				.forEach(i -> event.setLine(i, createLine(configLines.get(i), data[0], x, y, z, yaw, pitch)));
+		pdc.set(keyWorld, PersistentDataType.STRING, data[0]);
+		pdc.set(keyX, PersistentDataType.DOUBLE, x);
+		pdc.set(keyY, PersistentDataType.DOUBLE, y);
+		pdc.set(keyZ, PersistentDataType.DOUBLE, z);
+		pdc.set(keyYaw, PersistentDataType.FLOAT, yaw);
+		pdc.set(keyPitch, PersistentDataType.FLOAT, pitch);
 	}
 
 	public void updateChunk(@NotNull final Chunk chunk) {
@@ -159,7 +144,7 @@ public class SignTeleportService {
 				continue;
 			}
 			final PersistentDataContainer pdc = sign.getPersistentDataContainer();
-			if (!pdc.has(keyWorld)) {
+			if (!pdc.has(keyWorld, PersistentDataType.STRING)) {
 				continue;
 			}
 			final String worldName = pdc.get(keyWorld, PersistentDataType.STRING);

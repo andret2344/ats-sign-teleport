@@ -4,6 +4,7 @@
 
 package eu.andret.ats.signteleport;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,6 +29,7 @@ public class SignTeleportCommand implements CommandExecutor {
 			sender.sendMessage("SignTeleport configuration reloaded.");
 			return true;
 		}
-		return false;
+		sender.sendMessage(ChatColor.DARK_RED + "Error: " + ChatColor.RED + "Usage: /signteleport reload");
+		return true;
 	}
 }

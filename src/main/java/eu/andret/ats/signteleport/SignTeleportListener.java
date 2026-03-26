@@ -5,8 +5,6 @@
 package eu.andret.ats.signteleport;
 
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
-import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,12 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class SignTeleportListener implements Listener {
 	@NotNull
-	private final SignTeleportPlugin plugin;
-	@NotNull
 	private final SignTeleportService service;
 
-	public SignTeleportListener(@NotNull final SignTeleportPlugin plugin, @NotNull final SignTeleportService service) {
-		this.plugin = plugin;
+	public SignTeleportListener(@NotNull final SignTeleportService service) {
 		this.service = service;
 	}
 
@@ -48,21 +43,6 @@ public class SignTeleportListener implements Listener {
 			return;
 		}
 		final Player player = event.getPlayer();
-		if (player.isSneaking()) {
-			event.setCancelled(true);
-			if (!player.hasPermission("ats.signteleport.create")) {
-				return;
-			}
-			if (!(state instanceof final Sign sign)) {
-				return;
-			}
-			final String[] editorLines = service.buildEditorLines(pdc, worldName);
-			plugin.getServer().getScheduler().runTask(plugin, () -> {
-				player.sendSignChange(sign.getLocation(), editorLines);
-				player.openSign(sign, Side.FRONT);
-			});
-			return;
-		}
 		if (!player.hasPermission("ats.signteleport.use")) {
 			return;
 		}

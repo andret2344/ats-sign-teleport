@@ -93,20 +93,20 @@ class SignTeleportServiceTest {
 	}
 
 	@Test
-	void isTeleportSignFalse() {
+	void testTeleportSignFalse() {
 		// given
 		final PersistentDataContainer pdc = mock(PersistentDataContainer.class);
-		when(pdc.has(keyWorld)).thenReturn(false);
+		when(pdc.has(keyWorld, PersistentDataType.STRING)).thenReturn(false);
 
 		// when / then
 		assertThat(service.isTeleportSign(pdc)).isFalse();
 	}
 
 	@Test
-	void isTeleportSignTrue() {
+	void testTeleportSignTrue() {
 		// given
 		final PersistentDataContainer pdc = mock(PersistentDataContainer.class);
-		when(pdc.has(keyWorld)).thenReturn(true);
+		when(pdc.has(keyWorld, PersistentDataType.STRING)).thenReturn(true);
 
 		// when / then
 		assertThat(service.isTeleportSign(pdc)).isTrue();
@@ -131,25 +131,6 @@ class SignTeleportServiceTest {
 
 		// then
 		assertThat(location).isEqualTo(new Location(world, 1.4, 1.5, 1.6, 45.0f, 30.0f));
-	}
-
-	// ── buildEditorLines ──────────────────────────────────────────────────────
-
-	@Test
-	void buildEditorLines() {
-		// given
-		final PersistentDataContainer pdc = mock(PersistentDataContainer.class);
-		when(pdc.getOrDefault(keyX, PersistentDataType.DOUBLE, 0.0)).thenReturn(1.0);
-		when(pdc.getOrDefault(keyY, PersistentDataType.DOUBLE, 0.0)).thenReturn(2.0);
-		when(pdc.getOrDefault(keyZ, PersistentDataType.DOUBLE, 0.0)).thenReturn(3.0);
-		when(pdc.getOrDefault(keyYaw, PersistentDataType.FLOAT, 0.0f)).thenReturn(90.0f);
-		when(pdc.getOrDefault(keyPitch, PersistentDataType.FLOAT, 0.0f)).thenReturn(45.0f);
-
-		// when
-		final String[] lines = service.buildEditorLines(pdc, "theworld");
-
-		// then
-		assertThat(lines).containsExactly("[TELEPORT]", "[theworld]", "[1.0, 2.0, 3.0]", "[90.0, 45.0]");
 	}
 
 	// ── parseSignData ─────────────────────────────────────────────────────────
@@ -240,14 +221,7 @@ class SignTeleportServiceTest {
 		final String[] result = service.parseSignData(new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""});
 
 		// then
-		assertThat(result).isNotNull();
-		assertThat(result).hasSize(6);
-		assertThat(result[0]).isEqualTo("xyz");
-		assertThat(result[1]).isEqualTo("1.4");
-		assertThat(result[2]).isEqualTo("1.5");
-		assertThat(result[3]).isEqualTo("1.6");
-		assertThat(result[4]).isEqualTo("0.0");
-		assertThat(result[5]).isEqualTo("0.0");
+		assertThat(result).containsExactly("xyz", "1.4", "1.5", "1.6", "0.0", "0.0");
 	}
 
 	@Test
@@ -298,15 +272,15 @@ class SignTeleportServiceTest {
 		service.applySignData(event, pdc, data);
 
 		// then
+		assertThat(event.getLine(0)).isEqualTo("[TELEPORT]");
+		assertThat(event.getLine(2)).isEqualTo("xyz");
+		assertThat(event.getLine(3)).isEqualTo("1.4, 1.5, 1.6");
 		verify(pdc, times(1)).set(keyWorld, PersistentDataType.STRING, "xyz");
 		verify(pdc, times(1)).set(keyX, PersistentDataType.DOUBLE, 1.4);
 		verify(pdc, times(1)).set(keyY, PersistentDataType.DOUBLE, 1.5);
 		verify(pdc, times(1)).set(keyZ, PersistentDataType.DOUBLE, 1.6);
 		verify(pdc, times(1)).set(keyYaw, PersistentDataType.FLOAT, 0.0f);
 		verify(pdc, times(1)).set(keyPitch, PersistentDataType.FLOAT, 0.0f);
-		assertThat(event.getLine(0)).isEqualTo("[TELEPORT]");
-		assertThat(event.getLine(2)).isEqualTo("xyz");
-		assertThat(event.getLine(3)).isEqualTo("1.4, 1.5, 1.6");
 	}
 
 	@Test
@@ -321,7 +295,7 @@ class SignTeleportServiceTest {
 		final String[] data = {"xyz", "1.4", "1.5", "1.6", "90.0", "45.0"};
 
 		// when
-		final SignChangeEvent event = new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6, 90.0, 45.0]", ""}, Side.FRONT);
+		final SignChangeEvent event = new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}, Side.FRONT);
 		service.applySignData(event, pdc, data);
 
 		// then
@@ -343,9 +317,7 @@ class SignTeleportServiceTest {
 		final SignChangeEvent event = new SignChangeEvent(block, player, new String[]{"[TELEPORT]", "[xyz]", "[1.4, 1.5, 1.6]", ""}, Side.FRONT);
 		service.applySignData(event, pdc, data);
 
-		// then — pdc.set still called, but setLine not called
-		verify(pdc, times(1)).set(keyWorld, PersistentDataType.STRING, "xyz");
-		// lines remain unchanged from event constructor
+		// then — setLine not called, event lines remain unchanged from constructor
 		assertThat(event.getLine(0)).isEqualTo("[TELEPORT]");
 	}
 
@@ -396,7 +368,7 @@ class SignTeleportServiceTest {
 		when(world.getLoadedChunks()).thenReturn(new Chunk[]{chunk});
 		when(chunk.getTileEntities()).thenReturn(new BlockState[]{sign});
 		when(sign.getPersistentDataContainer()).thenReturn(pdc);
-		when(pdc.has(keyWorld)).thenReturn(false);
+		when(pdc.has(keyWorld, PersistentDataType.STRING)).thenReturn(false);
 
 		// when
 		service.updateSigns();
@@ -419,7 +391,7 @@ class SignTeleportServiceTest {
 		when(world.getLoadedChunks()).thenReturn(new Chunk[]{chunk});
 		when(chunk.getTileEntities()).thenReturn(new BlockState[]{sign});
 		when(sign.getPersistentDataContainer()).thenReturn(pdc);
-		when(pdc.has(keyWorld)).thenReturn(true);
+		when(pdc.has(keyWorld, PersistentDataType.STRING)).thenReturn(true);
 		when(pdc.get(keyWorld, PersistentDataType.STRING)).thenReturn("theworld");
 		when(pdc.getOrDefault(keyX, PersistentDataType.DOUBLE, 0.0)).thenReturn(1.0);
 		when(pdc.getOrDefault(keyY, PersistentDataType.DOUBLE, 0.0)).thenReturn(2.0);
@@ -462,7 +434,7 @@ class SignTeleportServiceTest {
 				.thenReturn(List.of("[TELEPORT]", "", "%WORLD%", "%X%, %Y%, %Z%"));
 		when(chunk.getTileEntities()).thenReturn(new BlockState[]{sign});
 		when(sign.getPersistentDataContainer()).thenReturn(pdc);
-		when(pdc.has(keyWorld)).thenReturn(true);
+		when(pdc.has(keyWorld, PersistentDataType.STRING)).thenReturn(true);
 		when(pdc.get(keyWorld, PersistentDataType.STRING)).thenReturn(null);
 
 		// when

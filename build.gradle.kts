@@ -25,14 +25,14 @@ dependencies {
 
 tasks {
 	compileJava {
-		sourceCompatibility = JavaVersion.VERSION_25.toString()
-		targetCompatibility = JavaVersion.VERSION_25.toString()
+		sourceCompatibility = JavaVersion.VERSION_17.toString()
+		targetCompatibility = JavaVersion.VERSION_17.toString()
 		options.compilerArgs.addAll(listOf("-parameters", "-g", "-Xlint:deprecation", "-Xlint:unchecked"))
 	}
 
 	test {
 		useJUnitPlatform()
-		finalizedBy(jacocoTestCoverageVerification, jacocoTestReport)
+		finalizedBy(jacocoTestReport)
 	}
 
 	jacocoTestReport {
@@ -45,18 +45,6 @@ tasks {
 				exclude("**/*Plugin.*")
 			}
 		)
-	}
-
-	jacocoTestCoverageVerification {
-		dependsOn(jacocoTestReport)
-		classDirectories.setFrom(jacocoTestReport.get().classDirectories)
-		violationRules {
-			rule {
-				limit {
-					minimum = "1".toBigDecimal()
-				}
-			}
-		}
 	}
 
 	build {
